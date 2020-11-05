@@ -1,1 +1,1 @@
-case class Quiz() dgdfgdfgdfgdfg
+case class Quiz()
