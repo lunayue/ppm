@@ -9,12 +9,12 @@ object menu extends App{
     input match{
       case "L" => login()
       case "C" => createUser()
-      case "Q" => logout()
+      case "Q" => exit()
       case _ => println("Invalid Input"); loginLoop()
     }
   }
   loginLoop()
-  
+
   def mainLoop(u: String) = {
     val input = getUserInput("(l)ogin, (c)reate user, (q)uit:")
     input match{
