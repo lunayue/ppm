@@ -5,17 +5,22 @@ object menu extends App{
   def loginLoop(): Unit ={
     println("(l)ogin, (c)reate user, (q)uit:")
     val input = readLine.trim.toUpperCase
-    println(printableInput(input))
-    loginLoop()
+    input match{
+      case "L" => {
+        println("login")
+        loginLoop()
+      }
+      case "C" => {
+        println("create user")
+      }
+      case "Q" => {
+        println("quit")
+      }
+      case _ => {
+        println("Invalid Input")
+      }
     }
-
-  def printableInput(input: String): String = input match {
-    case "l" | "login" => "login"
-    case "c" | "create user" => "create user"
-    case "q" | "quit" => "quit"
-    case _ => "Invalid Input"
   }
 
   loginLoop()
 }
-
