@@ -5,5 +5,5 @@ class primeiro {
 }
 
 object Hello{
-  def main(args: Array[String]) = println("Hello World! syhko")
+  def main(args: Array[String]) = println("Hello World! Lunayue and syhko")
 }
