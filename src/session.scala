@@ -16,5 +16,9 @@ object session {
 
   }
 
+  def exit() ={
+    println("Adeus!")
+  }
+
 
 }
