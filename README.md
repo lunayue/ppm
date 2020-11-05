@@ -6,7 +6,7 @@
 
 ------
 
-<a href="http://example.com/" target="_blank">example</a>
+[go](http://stackoverflow.com){:target="_blank" rel="noopener"}
 
 | Ficheiros        | Link           |
 | ------------- |:-------------:|
