@@ -1,0 +1,5 @@
+package teste
+
+class world {
+
+}
