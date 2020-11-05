@@ -1,6 +1,6 @@
 import ioUtils._
 import session._
-//Bruh moment
+//Bruh
 object menu extends App{
   def loginLoop(): Unit ={
     val input = getUserInput("(l)ogin, (c)reate user, (q)uit:")
@@ -45,5 +45,5 @@ object menu extends App{
       case _ => println("Invalid Input"); mainLoop(u)
     }
   }
-  mainLoop("ola");
+  mainLoop("ola")
 }
