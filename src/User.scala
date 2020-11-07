@@ -1,1 +1,1 @@
-case class User()
+case class User(username: String, password: String)
