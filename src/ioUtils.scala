@@ -4,13 +4,18 @@ import java.io._
 
 object ioUtils {
   def getUserInput(pedido: String):String = {
-    print("\n" + pedido + ": ")
+    print(pedido + ": ")  //O input do User mete \n na consola
     readLine.trim.toUpperCase
   }
 
   def getUserInputSensitive(pedido: String):String = {
-    print("\n" + pedido + ": ")
-    readLine.trim
+    print(pedido + ": ")  //O input do User mete \n na consola
+    val input = readLine.trim
+    if(input.contains(" ")){
+      println("Não é permitido a utilização de espaços")
+      getUserInputSensitive(pedido)
+    }
+    input
   }
 
   def readUser(username: String, pass: String): Option[User] = {

@@ -17,7 +17,7 @@ object menu extends App{
     }
 
     user match {
-      case None => println("Comeback again")
+      case None => println("Volte sempre")
       case _ => mainLoop("Oq q é suposto meter aqui? O nome do User?")
     }
   }
