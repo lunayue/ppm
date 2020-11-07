@@ -1,6 +1,8 @@
 import ioUtils._
 import session._
 
+import scala.annotation.tailrec
+
 object menu extends App{
 
   loginLoop()
@@ -8,9 +10,9 @@ object menu extends App{
   def loginLoop(): Unit ={
     val input = getUserInput("(l)ogin, (c)reate user, (q)uit:")
     val user = input match{
-      case "L" => login() //case None => loginLoop()
-      case "C" => createUser() //case None => loginLoop()
-      case "Q" => exit()
+      case "L" => login(false) //case None => loginLoop()
+      case "C" => createUser(false) //case None => loginLoop()
+      case "Q" => exit()  //Unica função que permite proceder com o Usuario a None
       case _ => println("Invalid Input"); loginLoop()
     }
 
@@ -18,9 +20,9 @@ object menu extends App{
       case None => println("Comeback again")
       case _ => mainLoop("Oq q é suposto meter aqui? O nome do User?")
     }
-
   }
 
+  @tailrec
   def mainLoop(u: String): Unit = {
 
     //criar um objecto como o prof fez para se poder fazer um loop em vez de um long String
