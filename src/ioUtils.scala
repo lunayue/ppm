@@ -49,4 +49,23 @@ object ioUtils {
     None
     //Devolve None se ja tiver um User com como tal username
   }
+
+  def writeQuiz(q:Quiz) = {
+    val dir = new File("quizzes")
+    dir.mkdir() //Apenas cria se nao existir essa diretoria
+
+    val file = new File(dir.toString + File.separator + q.titulo + ".txt")
+    val fos = new FileOutputStream(file, false)
+    val pw = new PrintWriter(fos)
+
+    file.createNewFile()
+    q.perguntas map (x => pw.write(x.escreve))
+    pw.write("\nTentativas\n" + q.escreveUt())
+    pw.close()
+  }
+
+  def writeQuizzes(qs: List[Quiz]):List[Quiz] = qs match{
+    case Nil => List()
+    case h::t => writeQuiz(h); writeQuizzes(t)
+  }
 }

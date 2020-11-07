@@ -1,0 +1,24 @@
+Pergunta
+Tailmon
+Opcoes
+y
+n
+Correcta
+1
+Pergunta
+fifimon
+Opcoes
+y
+n
+Correcta
+2
+
+Tentativas
+
+Ola
+Pergunta(Tailmon,List(y, n),1)
+1
+true
+Pergunta(fifimon,List(y, n),2)
+2
+true

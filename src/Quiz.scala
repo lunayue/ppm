@@ -1,4 +1,5 @@
 import Quiz._
+import ioUtils.writeQuizzes
 
 import scala.annotation.tailrec
 import scala.io.StdIn.readLine
@@ -19,7 +20,7 @@ object quizzes extends App{
       case "C" => quizLoop(qs ++ List(adicionarPergunta(criarQuiz())))
       case "P" => pickQuiz(qs)
       case "E" => println("edit"); qs
-      case "L" => println("leave"); print(qs); qs
+      case "L" => println("leave"); writeQuizzes(qs)
     }
   }
 
@@ -80,6 +81,7 @@ object quizzes extends App{
 //Quiz
 case class Quiz(titulo: Titulo, perguntas: List[Pergunta], ut: UsersTries){
   def play():Quiz = Quiz.play(this)
+  def escreveUt():String = Quiz.escreveUt(ut:UsersTries)
 }
 
 object Quiz{
@@ -99,15 +101,34 @@ object Quiz{
           case -1 => loop(h.opcaoValida(readLine.toInt))
           case _ => n
         }
-        (t, (h, n, h.correta(n))::rs)
+        jogadas(t, (h, n, h.correta(n))::rs)
       }
     }
     val j = jogadas(q.perguntas, List())
+
+    println()
 
     q.ut.contains("Ola") match{
       case false => Quiz(q.titulo, q.perguntas, q.ut + ("Ola" -> j._2.reverse))
       case true => val nova = q.ut("Ola") ::: j._2.reverse; Quiz(q.titulo, q.perguntas, q.ut + ("Ola" -> nova))
     }
+  }
+
+  def escreveUt(ut:UsersTries):String = {
+    def loop(k:List[String], str:String):(List[String], String) = k match{
+      case Nil => (List(), str)
+      case a::tail => loop(tail,escreveTentativa(a, ut(a)))
+    }
+    loop(ut.keys.toList,"")._2
+  }
+
+  def escreveTentativa(s: String, lst: List[(Pergunta, Int, Boolean)]):String = {
+    val inicio = "\n" + s
+    def loop(l: List[(Pergunta, Int, Boolean)], str:String):(List[(Pergunta, Int, Boolean)], String) = l match{
+      case Nil => (List(), str)
+      case a::tail => loop(tail, str + "\n" + a._1 + "\n" + a._2 + "\n" + a._3)
+    }
+    inicio + loop(lst, "")._2
   }
 
   /*def corretas(rs: List[(Pergunta,Int)]) = {
@@ -126,6 +147,7 @@ case class Pergunta(texto: String, opcoes: List[String], certa: Int){
   def mostra() = Pergunta.mostra(this)
   def opcaoValida(n:Int): Int = Pergunta.opcaoValida(this.opcoes, n)
   def correta(n:Int):Boolean = Pergunta.correta(this.certa, n)
+  def escreve():String = Pergunta.escreve(this)
 }
 
 object Pergunta{
@@ -142,4 +164,13 @@ object Pergunta{
     case _ => -1
   }
   def correta(c:Int, n:Int):Boolean = (c == n)
+
+  def escreve(p:Pergunta):String = {
+    val inicio = "Pergunta\n" + p.texto + "\n" + "Opcoes\n"
+    def loop(lst: List[String], s:String):(List[String], String) = lst match {
+      case Nil => (List(), s)
+      case a::tail => loop(tail, s + a + "\n")
+    }
+    inicio + loop(p.opcoes, "")._2 + "Correcta\n" + p.certa + "\n"
+  }
 }
