@@ -59,13 +59,64 @@ object ioUtils {
     val pw = new PrintWriter(fos)
 
     file.createNewFile()
+    pw.write(q.titulo + "\n")
     q.perguntas map (x => pw.write(x.escreve))
-    pw.write("\nTentativas\n" + q.escreveUt())
+    pw.write("Tentativas" + q.escreveUt())
     pw.close()
   }
 
   def writeQuizzes(qs: List[Quiz]):List[Quiz] = qs match{
     case Nil => List()
     case h::t => writeQuiz(h); writeQuizzes(t)
+  }
+
+  def readQuizzes():List[Quiz] = {
+    val files = getListOfFiles("quizzes")
+    def loop(fs: List[File], qs:List[Quiz]):(List[File], List[Quiz]) = fs match {
+      case Nil => (List(), qs)
+      case h::t => {
+        val bufferedSource = Source.fromFile(h)
+        val lines = bufferedSource.getLines().toList
+        bufferedSource.close
+        loop(t, qs ::: List(readQuiz(lines, 0, Quiz("",List(), Map()))._3))
+      }
+    }
+    loop(files, List())._2
+  }
+
+  def readQuiz(str:List[String], n:Int, q:Quiz):(List[String], Int, Quiz) = n match {
+      //reads the title and moves to the 1st question
+    case 0 => readQuiz(str.tail.tail, 1, Quiz(str(0),q.perguntas,q.ut))
+      //reads a question
+    case 1 => {
+      val texto = str.head
+      def loop(s:List[String],os:List[String]):(List[String],List[String]) = s.head match {
+        case "Opcoes" => loop(s.tail, os)
+        case "Correcta" => (s.tail,os)
+        case x => loop(s.tail, os ::: List(x))
+      }
+      val opcoes = loop(str.tail, List())
+      val pergunta = Pergunta(texto, opcoes._2, opcoes._1.head.toInt)
+
+      val next = opcoes._1.tail
+      next.head match{
+        case "Pergunta" => readQuiz(next.tail, 1, Quiz(q.titulo, q.perguntas ::: List(pergunta), q.ut))
+        case _ => println(next.head); readQuiz(next.tail, 2, Quiz(q.titulo, q.perguntas ::: List(pergunta), q.ut))
+      }
+      //if(next.head == "Pergunta") readQuiz(next.tail, 1, Quiz(q.titulo, q.perguntas ::: List(pergunta), q.ut)) else readQuiz(next.tail, 2, Quiz(q.titulo, q.perguntas ::: List(pergunta), q.ut))
+
+    }
+    case _ => {
+      (str, n, q)
+    }
+  }
+
+  def getListOfFiles(dir: String):List[File] = {
+    val d = new File(dir)
+    if (d.exists && d.isDirectory) {
+      d.listFiles.filter(_.isFile).toList
+    } else {
+      List[File]()
+    }
   }
 }

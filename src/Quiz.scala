@@ -1,5 +1,5 @@
 import Quiz._
-import ioUtils.writeQuizzes
+import ioUtils._
 
 import scala.annotation.tailrec
 import scala.io.StdIn.readLine
@@ -9,8 +9,9 @@ import scala.io.StdIn.readLine
 //"Main"
 
 object quizzes extends App{
-  val qzs = List[Quiz]()
-  quizLoop(qzs)
+  //val qzs = List[Quiz]()
+  //quizLoop(qzs)
+  quizLoop(readQuizzes())
 
   @tailrec
   def quizLoop(qs: List[Quiz]):List[Quiz] ={

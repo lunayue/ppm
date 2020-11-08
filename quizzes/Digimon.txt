@@ -1,3 +1,4 @@
+Digimon
 Pergunta
 Tailmon
 Opcoes
@@ -12,9 +13,7 @@ y
 n
 Correcta
 2
-
 Tentativas
-
 Ola
 Pergunta(Tailmon,List(y, n),1)
 1
