@@ -1,8 +1,16 @@
+import scala.annotation.tailrec
+import java.io.File
+import scala.io._
 import ioUtils._
 
-import scala.annotation.tailrec
-
 object session {
+
+  val userFileReader:Map[Int,String] = Map(
+    1 -> "Username",
+    2 -> "Password",
+    3 -> "Quizz"
+  )
+
   @tailrec
   def login(errorMSG: Boolean):Option[User] = {
     if(errorMSG){ println("Algum dos dados submetidos esta incorreto")} //Em caso de algum dado submetido esteje incorreto
@@ -40,7 +48,25 @@ object session {
 
   def exit():Option[User] ={
     println("Adeus!")
-    None //Dps da validação (Faz sentido returnar None quando o User quer sair?)
+    None //Faz sentido returnar None quando o User quer sair?
+  }
 
+  def userPerfil(user: User): Unit ={
+    val input = getUserInput("1)Ver Perfil, 2)Editar Perfil")
+    input match {
+      case "1" => println("O seu Perfil"); verPerfil(user)
+      case "2" => println("Editar Perfil")
+      case _ => println("Invalid Input"); userPerfil(user)
+    }
+  }
+
+  def verPerfil(user: User): Unit ={
+    val bufferedSource = Source.fromFile("Users" + File.separator + user.username +".txt")
+    var i = 1
+    for (line <- bufferedSource.getLines){
+      println(userFileReader(i) + ": " + line)
+      i = math.min(i + 1, userFileReader.size)
+    }
+    bufferedSource.close
   }
 }
