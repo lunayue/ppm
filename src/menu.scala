@@ -5,6 +5,7 @@ import session._
 object menu extends App{
 
   loginLoop()
+  //mainLoop("ola")
 
   def loginLoop():Option[User] ={
     val input = getUserInput("(l)ogin, (c)reate user, (q)uit:")
@@ -58,5 +59,4 @@ object menu extends App{
       case _ => println("Invalid Input"); mainLoop(u)
     }
   }
-  //mainLoop("ola")
 }

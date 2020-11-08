@@ -18,7 +18,7 @@ object session {
     val password = getUserInputSensitive("Password")
 
     //ver se há ficheiro com o mmo username, se sim ver se a pass é igual
-    readUser(username,password) match {  //writerUser valida o User (Option[User])
+    readUser(username,password) match {  //readUser valida o User (Option[User])
       case None => login(true)  //User não existe
       case _ => Some(User(username,password))
     }
@@ -55,18 +55,23 @@ object session {
     val input = getUserInput("1)Ver Perfil, 2)Editar Perfil")
     input match {
       case "1" => println("O seu Perfil"); verPerfil(user)
-      case "2" => println("Editar Perfil")
+      case "2" => println("Editar Perfil"); editarPerfile(user)
+      case "q" | "Q" =>
       case _ => println("Invalid Input"); userPerfil(user)
     }
   }
 
   def verPerfil(user: User): Unit ={
-    val bufferedSource = Source.fromFile("Users" + File.separator + user.username +".txt")
+    val bufferedSource = Source.fromFile("src" + File.separator +"users" + File.separator + user.username +".txt")
     var i = 1
     for (line <- bufferedSource.getLines){
       println(userFileReader(i) + ": " + line)
       i = math.min(i + 1, userFileReader.size)
     }
     bufferedSource.close
+  }
+
+  def editarPerfile(user: User): Unit = {
+    //Perguntar se que mudar de username ou Password
   }
 }
