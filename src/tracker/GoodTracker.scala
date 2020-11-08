@@ -20,17 +20,15 @@ object GoodTracker{
     @tailrec
     def loop(lst:List[String], str:String):(List[String], String) = lst match{
       case Nil => (List(), str)
-      case h::t => loop(t, h + ":" + dados(h).toString + "\n")
+      case h::t => loop(t, str + h + ":" + dados(h).toString + "\n" )
     }
     loop(dados.keys.toList, "")._2
   }
 
-  def readRecord[A](dados:Map[String, A], data:String):Option[A] = {
-    dados.keys.toList.indexOf(data) match {
+  def readRecord[A](dados:Map[String, A], data:String):Option[A] = dados.keys.toList.indexOf(data) match {
       case -1 => None
       case _ => Some(dados(data))
     }
-  }
 
   /*def editRecord[A](tracker: GoodTracker[A], data:String, dado:A, f:(A,A) => A):GoodTracker[A] = {
     tracker.mapa(data) match {
@@ -39,17 +37,25 @@ object GoodTracker{
     }
   }*/
 
-  def removeRecord[A](tracker:GoodTracker[A], data:String):GoodTracker[A] = tracker.mapa(data) match {
-    case None => GoodTracker[A](tracker.name, tracker.mapa, tracker.meta)
+  def removeRecord[A](tracker:GoodTracker[A], data:String):GoodTracker[A] = tracker.mapa.keys.toList.indexOf(data) match {
+    case -1 => GoodTracker[A](tracker.name, tracker.mapa, tracker.meta)
     case _ => GoodTracker[A](tracker.name, tracker.mapa - data, tracker.meta)
   }
 }
 
 object menu extends App{
   val a = GoodTracker("Agua em copos de 250ml", Map[String,Int](), 8)
-  loop(a)
+  val b = a.addRecord("Ola", 5)
+  val c = b.addRecord("Adeus", 20)
+  println(c)
+  println(c.readRecord())
+  val d = c.removeRecord("no")
+  val e = d.removeRecord("Ola")
+  println(e.readRecord())
+  val f = e.changeMeta(20)
+  println(f)
 
-  def loop[A](tracker: GoodTracker[A]):GoodTracker[A] = {
+  /*def loop[B](tracker: GoodTracker[B]):GoodTracker[B] = {
     val opcoes = List("Adicionar record", "Ler um record", "Ver todos os records", "Remover um record", "Editar a meta", "Sair")
 
     opcoes map (x => println(opcoes.indexOf(x)+1 + ") " + x))
@@ -63,5 +69,5 @@ object menu extends App{
       case 6 => tracker
       case _ => println("Input não reconhecido"); loop(tracker)
     }
-  }
+  }*/
 }
