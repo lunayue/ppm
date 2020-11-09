@@ -1,7 +1,7 @@
 package tracker
 
 import scala.annotation.tailrec
-import scala.io.StdIn.readLine
+import texto._
 
 case class GoodTracker[A](name:String, mapa:Map[String,A], meta: A){
   def addRecord(data:String, dado:A):GoodTracker[A] = GoodTracker.addRecord[A](this, data, dado)
@@ -46,6 +46,7 @@ object GoodTracker{
 object menu extends App{
   val a = GoodTracker("Agua em copos de 250ml", Map[String,Int](), 8)
   val b = a.addRecord("Ola", 5)
+  println(b.readRecord("Ola"))
   val c = b.addRecord("Adeus", 20)
   println(c)
   println(c.readRecord())
@@ -54,6 +55,7 @@ object menu extends App{
   println(e.readRecord())
   val f = e.changeMeta(20)
   println(f)
+
 
   /*def loop[B](tracker: GoodTracker[B]):GoodTracker[B] = {
     val opcoes = List("Adicionar record", "Ler um record", "Ver todos os records", "Remover um record", "Editar a meta", "Sair")

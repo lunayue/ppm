@@ -2,6 +2,11 @@ import scala.io.StdIn.readLine
 import scala.io.Source
 import java.io._
 
+import users.User
+import tracker.Tracker
+
+import scala.annotation.tailrec
+
 object ioUtils {
   def getUserInput(pedido: String):String = {
     print(pedido + ": ")  //O input do User mete \n na consola
@@ -119,4 +124,75 @@ object ioUtils {
       List[File]()
     }
   }
+
+  def writeTracker(t:Tracker){
+    val dir = new File("trackers")
+    dir.mkdir()
+
+    val file = new File(dir.toString + File.separator + t.user + "-" + t.nome + ".txt")
+
+    if(!file.exists()){
+      val fos = new FileOutputStream(file, true)
+      val pw = new PrintWriter(fos)
+
+      file.createNewFile()
+      pw.write(t.user + "\n")
+      pw.write(t.nome + "\n")
+      pw.write(t.meta + "\n")
+      pw.write(t.publico + "\n")
+      pw.write(t.acima + "\n")
+
+      t.mapa.foreach (x => pw.write(x._1 + "\n" + x._2 + "\n"))
+      pw.close()
+    }
+  }
+
+  @tailrec
+  def writeTrackers(ts:List[Tracker]):List[Tracker] = ts match{
+    case Nil => List()
+    case a::t =>
+      writeTracker(a)
+      writeTrackers(t)
+  }
+
+
+  def readTrackers(u:User, lst:List[Tracker]): List[Tracker] ={
+    val files = getListOfFiles("trackers")
+
+    @tailrec
+    def loopFiles(fs:List[File], ts:List[Tracker]):(List[File],List[Tracker]) = fs match {
+      case Nil => (List(),ts)
+      case a::t => readTracker(a, u) match {
+        case None => loopFiles(t,ts)
+        case x => loopFiles(t, x.get::ts)
+      }
+    }
+    loopFiles(files, lst)._2
+  }
+
+  def readTracker(file:File, u:User):Option[Tracker] = {
+    if(file.exists()){
+      val bufferedSource = Source.fromFile(file)
+      val lines = bufferedSource.getLines.toList
+      val username = lines.head
+      if(username.equals(u.username) || username.equals("default")){
+        val tracker = Tracker(username, lines(1), Map(), lines(2).toDouble, lines(3).toBoolean, lines(4).toBoolean )
+        if(username.equals("default")) Some(tracker)
+        else{
+          val mapaLines = lines.drop(5)
+          def loopMapa(ls:List[String], mp:Map[String,Double]):(List[String], Map[String,Double]) = ls match {
+            case Nil => (List(), mp)
+            case a::b::t => (t, mp + (a->b.toDouble))
+          }
+          Some(Tracker(tracker.user, tracker.nome, loopMapa(mapaLines,Map())._2, tracker.meta, tracker.acima, tracker.publico))
+        }
+      }
+      else{
+        bufferedSource.close
+        None
+      }
+    }
+    else None
+  }
+
 }
