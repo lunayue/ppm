@@ -1,149 +1,102 @@
-import ioUtils._
+import MenuUtils.optionPrompt
 import session._
 import users.User
 
 import scala.annotation.tailrec
 import scala.io.StdIn.readLine
-import tracker.Tracker._
 import tracker.Tracker
-/*object menu extends App{
-  loginLoop()
-
-  def loginLoop(): Unit ={
-    val input = getUserInput("(l)ogin, (c)reate user, (q)uit:")
-    val user = input match{
-      case "L" => login(false) //case None => loginLoop()
-      case "C" => createUser(false) //case None => loginLoop()
-      case "Q" => exit()  //Unica função que permite proceder com o Usuario a None
-      case _ => println("Invalid Input"); loginLoop()
-    }
-
-    user match {
-      case None => println("Volte sempre")
-      case _ => mainLoop("Oq q é suposto meter aqui? O nome do User?")
-    }
-  }
-
-  @tailrec
-  def mainLoop(u: String): Unit = {
-
-    //criar um objecto como o prof fez para se poder fazer um loop em vez de um long String
-    val input = getUserInput("1)perfil, 2)tracker, 3)qizzes, 4)compras, 5)alimentacao, 6)outros perfis, 7)logout")
-
-    input match{
-      case "1" => println("perfil"); mainLoop(u)
-
-      case "2" => println("tracker"); mainLoop(u) //bons e maus,
-      // bons: meta por periodo de tempo, periodo de tempo, o alcançado no periodo de tempo (criar, apagar, colocar/editar registo -> tentar dar deixar aumentar, diminuir ou alterar)
-      // maus: media de dinheiro/tempo gasto num uso, usu médio por periodo de tempo, data e consumo??? (criar, apagar, colocar/editar, calculo de dinheiro/tempo gasto/poupado?)
-
-      case "3" => println("qizzes"); mainLoop(u)
-      // lista de perguntas, cada pergunta tem um conjunto de opções e 1 correcta
-      // criar, editar, "jogar", fazer track do resultado ou longo de varias tentativas
-
-      case "4" => println("compras"); mainLoop(u)
-        // parecido com o tracker?
-
-      case "5" => println("alimentacao"); mainLoop(u)
-        // parecido com o tracker?
-        // talvez fazer um gerador de refeição aleatorio???
-
-      case "6" => println("outros perfis"); mainLoop(u)
-        // ir buscar os outros ficheiros de user e apresentar os valores q fazem sentido, talvez tentar fazer algun sorting
-
-      case "7" => println("logout"); logout();loginLoop();
-        // largar o user e voltar para o loginLoop???
-        // Gello: I think yes
-
-      case _ => println("Invalid Input"); mainLoop(u)
-    }
-  }
-  //mainLoop("ola")
-}*/
+import tracker.Tracker.adicionarTracker
 
 object menu extends App {
   @tailrec
   def loginLoop():Unit = {
-    val options = List(
-      ("1","Login"),
-      ("2","Criar Utilizador"),
-      ("0","Sair"))
+    val options = Map(
+      "1" -> MenuOption("Login", ()=>mainLoop(login().get)),
+      "2"-> MenuOption("Criar Utilizador", ()=>mainLoop(createUser().get)),
+      "0" -> MenuOption("Sair", () => sys.exit))
 
-    println()
-    println("----[Bem-Vindo]----")
-    options.foreach(option => println(option._1 + ") " + option._2))
-
-    readLine() match {
-      case "1" => login() match {
-        case None => loginLoop()
-        case u => mainLoop(u.get)
-      }
-      case "2" => createUser() match {
-        case None => loginLoop()
-        case u => mainLoop(u.get)
-      }
-      case "0" => sys.exit
-      case _ => println("Opcao invalida"); loginLoop()
+    optionPrompt("Bem-Vindo", options) match {
+      case Some(x) => x.exec()
+      case _ => println("Invalid Input"); loginLoop()
     }
-
   }
 
   @tailrec
   def mainLoop(u: User):User = {
-    val trackers = readTrackers(u, List())
-    val options = List(
-      ("1","Ver Perfil"),
-      ("2","Trackers"),
-      ("3","Quizzes"),
-      ("4","Ver outros utilizadores"),
-      ("0","Logout")
+    val options = Map(
+      "1" -> MenuOption[User]("Ver Perfil", ()=>{println("todo");u}),
+      "2" -> MenuOption[User]("Trackers", ()=>trackerLoop(u)),
+      "3" -> MenuOption[User]("Quizzes", ()=>{println("todo");u}),
+      "4" -> MenuOption[User]("Ver outros utilizadores", ()=>{println("todo");u}),
+      //"0" -> MenuOption("Logout", ()=>{logout(u)})
     )
 
-    println()
-    println("----[Opcoes]----")
-    options.foreach(option => println(option._1 + ") " + option._2))
-
-    readLine() match {
-      case "1" => User("Ola", "Ola")
-      case "2" => trackerLoop(u, trackers)._1
-      case "3" => User("Ola", "Ola")
-      case "4" => User("Ola", "Ola")
-      case "0" => sys.exit //should have a save thing
+    optionPrompt("Bem-Vindo", options) match {
+      case Some(x) => x.exec()
+        u
       case _ => println("Opcao invalida"); mainLoop(u)
     }
   }
 
   @tailrec
-  def trackerLoop(u:User, lst:List[Tracker]):(User,List[Tracker]) = {
-    val options = List(
-      ("1","Ver Trackers"),
-      ("2","Adicionar Novo Tracker"),
-      ("3","Criar Novo Tracker"),
-      ("0","Regressar")
+  def trackerLoop(u:User):User = {
+    val options = Map(
+      "1" -> MenuOption("Ver Trackers", ()=>verTrackerLoop(u)),
+      "2" -> MenuOption("Adicionar Novo Tracker", ()=>verPodeAdicionarLoop(u)),
+      "3" -> MenuOption("Criar Novo Tracker", ()=>println("todo")),
+      "0" -> MenuOption("Regressar", ()=>mainLoop(u))
     )
 
-    println()
-    println("----[Trackers]----")
-    options.foreach(option => println(option._1 + ") " + option._2))
-
-    readLine() match {
-      case "1" =>{
-        lst map (x => if(x.user.equals(u.username)) println(x))
-        (u,lst)
-      }
-      case "2" => lst map (x => if(x.user.equals("default")) println(x))
-        (u,lst)
-      case "3" =>
-        val novo = criarTracker(u)
-        println("Novo tracker criado com sucesso")
-        trackerLoop(u, novo._2::lst)
-      case "0" => writeTrackers(lst)
-        (mainLoop(u),lst)
-      case _ => println("Opcao invalida"); trackerLoop(u,lst)
+    optionPrompt("Trackers", options) match {
+      case Some(x) => x.exec();u;
+      case _ => println("Opcao invalida"); trackerLoop(u)
     }
+  }
 
+  @tailrec
+  def verTrackerLoop(u: User):User = {
+    println("----[Os Seus Trackers]----")
+    val ativos = u.trackers filter (x => x.user.equals(u.username))
+    ativos foreach (x => println(ativos.indexOf(x) + 1 + ") " + x.nome))
+    println("0) Regressar")
+    readLine().trim match {
+      case "0" => trackerLoop(u)
+      case x if x.toInt <= ativos.length =>
+        trackerEscolhidoLoop(u, ativos(x.toInt - 1))._1
+      case _ => println("Input não válido")
+        verTrackerLoop(u)
+    }
+  }
+
+  def verPodeAdicionarLoop(u:User):User = {
+    println("----[Disponiveis]----")
+    val disponiveis = u.trackers filter (x => x.user.equals("default"))
+    disponiveis foreach (x => println(disponiveis.indexOf(x) + 1 + ") " + x.nome))
+    println("0) Regressar")
+    readLine().trim match {
+      case "0" => trackerLoop(u)
+      case x if x.toInt <= disponiveis.length =>
+        trackerLoop(adicionarTracker(u, disponiveis(x.toInt - 1)))
+      case _ => println("Input não válido")
+        verPodeAdicionarLoop(u)
+    }
+  }
+
+  def trackerEscolhidoLoop(u:User, t:Tracker):(User,Tracker) = {
+
+    val options = Map(
+      "1"->MenuOption[(User,Tracker)]("Ver Informação", ()=>{println(t); (u,t)}),
+      "2"->MenuOption[(User,Tracker)]("Procurar Registo", ()=>{t.readRecord(readLine("Data: ").trim); (u,t)}),
+      "3"->MenuOption[(User,Tracker)]("Adicionar Registo", ()=>{val res = t.addRecord(u,readLine("Data: ").trim,readLine("Dado: ").trim.toDouble); trackerEscolhidoLoop(res._1, res._2)}),
+      "4"->MenuOption[(User,Tracker)]("Apagar Registo", ()=>t.removeRecord(u,readLine("Data: ").trim)),
+      "0"->MenuOption[(User,Tracker)]("Regressar", ()=>(verTrackerLoop(u),t))
+    )
+
+    optionPrompt("Tracker: " + t.nome + " Meta: " + t.meta + " Registos: " + t.mapa.keys.toList.length, options) match {
+      case Some(x) => x.exec();(u,t);
+      case _ => println("Opcao invalida"); (trackerLoop(u),t)
+    }
   }
 
   loginLoop()
-
 }

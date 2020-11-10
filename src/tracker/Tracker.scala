@@ -6,16 +6,20 @@ import scala.annotation.tailrec
 import scala.io.StdIn.readLine
 
 case class Tracker(user:String, nome:String, mapa:Map[String, Double], meta:Double, acima:Boolean, publico:Boolean){
-  def addRecord(data:String, dado:Double):Tracker = Tracker.addRecord(this, data, dado)
+  def addRecord(user:User, data:String, dado:Double):(User,Tracker) = Tracker.addRecord(user,this, data, dado)
   def readRecord():String = Tracker.readRecord(this.mapa)
   def readRecord(data:String):String = Tracker.readRecord(this.mapa, data)
-  def removeRecord(data:String):Tracker = Tracker.removeRecord(this, data)
+  def removeRecord(user:User, data:String):(User,Tracker) = Tracker.removeRecord(user, this, data)
   def changeMeta(nova:Double):Tracker = Tracker(this.user, this.nome, this.mapa, nova, this.acima, this.publico)
   def changeAcima(novo:Boolean):Tracker = Tracker(this.user, this.nome, this.mapa, this.meta, novo, this.publico)
 }
 
 object Tracker{
-  def addRecord(tracker:Tracker, data:String,dado:Double):Tracker = Tracker(tracker.user, tracker.nome, tracker.mapa + (data -> dado), tracker.meta, tracker.acima, tracker.publico)
+  def addRecord(user:User, tracker:Tracker, data:String,dado:Double):(User, Tracker) ={
+    val novo = Tracker(tracker.user, tracker.nome, tracker.mapa + (data -> dado), tracker.meta, tracker.acima, tracker.publico)
+    print(novo)
+    (user.replaceTracker(tracker, novo), novo)
+  }
 
   def readRecord(dados:Map[String, Double]):String = {
     @tailrec
@@ -31,12 +35,14 @@ object Tracker{
     case _ => data + ") " + Some(dados(data)).get
   }
 
-  def removeRecord(tracker:Tracker, data:String):Tracker = tracker.mapa.keys.toList.indexOf(data) match {
-    case -1 => Tracker(tracker.user, tracker.nome, tracker.mapa, tracker.meta, tracker.acima, tracker.publico)
-    case _ => Tracker(tracker.user, tracker.nome, tracker.mapa - data, tracker.meta, tracker.acima, tracker.publico)
+  def removeRecord(u:User, tracker:Tracker, data:String):(User,Tracker) = tracker.mapa.keys.toList.indexOf(data) match {
+    case -1 => (u,tracker)
+    case _ =>
+      val novo = Tracker(tracker.user, tracker.nome, tracker.mapa - data, tracker.meta, tracker.acima, tracker.publico)
+      (u.replaceTracker(tracker, novo),novo)
   }
 
-  def criarTracker(u:User):(User,Tracker) = {
+  def criarTracker(u:User):User = {
     val nome = readLine("Nome para o tracker: ").trim
 
     @tailrec
@@ -65,11 +71,16 @@ object Tracker{
 
     val user = if(publico) "default" else u.username
 
-    (u, Tracker(user, nome, Map(), meta.toDouble, acima, publico))
+    u.addTracker(Tracker(user, nome, Map(), meta.toDouble, acima, publico))
   }
 
-  def adicionarTracker(u:User, lst:List[Tracker]): Unit ={
+  def adicionarTracker(u:User,t:Tracker): User ={
+    u.replaceTracker(t, Tracker(u.username, t.nome, Map(),t.meta, t.acima, t.publico))
+  }
 
+  def retirarRepetidos(u:String,lst:List[Tracker]):List[Tracker] = {
+    val ativos = lst filter (x=>x.user.equals(u)) map (x=>x.nome)
+    lst filter (x=> x.user.equals(u) || ativos.indexOf(x.nome)== -1)
   }
 }
 

@@ -1,7 +1,6 @@
 package tracker
 
 import scala.annotation.tailrec
-import texto._
 
 case class GoodTracker[A](name:String, mapa:Map[String,A], meta: A){
   def addRecord(data:String, dado:A):GoodTracker[A] = GoodTracker.addRecord[A](this, data, dado)
