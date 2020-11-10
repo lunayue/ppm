@@ -33,6 +33,7 @@ object session {
     }
   }
 
+
   def logout():Option[User] ={
     //save para file???
     None //Dps da validação
