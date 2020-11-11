@@ -147,7 +147,6 @@ object ioUtils {
     pw.write(t.acima + "\n")
 
     t.mapa.foreach (x => pw.write(x._1 + "\n" + x._2 + "\n"))
-    println("ola")
     pw.close()
   }
 

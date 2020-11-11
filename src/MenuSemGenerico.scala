@@ -1,6 +1,6 @@
 import session.{createUser, login, logout}
 import tracker.Tracker
-import tracker.Tracker.adicionarTracker
+import tracker.Tracker._
 import users.User
 
 import scala.annotation.tailrec
@@ -14,9 +14,8 @@ object MenuSemGenerico extends App{
       ("2", "Criar Utilizador"),
       ("0", "Sair"))
 
-    options.foreach(x =>println(x._1 + ") " + x._2))
-
     println("----[Bem Vindo]----")
+    options.foreach(x =>println(x._1 + ") " + x._2))
     readLine().trim match {
       case "1" => mainLoop(login().get)
       case "2" => mainLoop(createUser().get)
@@ -36,9 +35,8 @@ object MenuSemGenerico extends App{
       ("0", "Logout")
     )
 
-    options.foreach(x =>println(x._1 + ") " + x._2))
-
     println("----[Opcoes]----")
+    options.foreach(x =>println(x._1 + ") " + x._2))
     readLine().trim match {
       case "1" => println("todo")
         mainLoop(u)
@@ -63,14 +61,15 @@ object MenuSemGenerico extends App{
       ("0","Regressar")
     )
 
-    options.foreach(x =>println(x._1 + ") " + x._2))
-
     println("----[Trackers]----")
+    options.foreach(x =>println(x._1 + ") " + x._2))
     readLine().trim match {
       case "1" => verTrackerLoop(u)
       case "2" => verPodeAdicionarLoop(u)
-      case "3" => println("todo")
-        trackerLoop(u)
+      case "3" => {
+        val aux = getCreateTrackerInputs()
+        trackerLoop(criarTracker(u, aux._1, aux._2, aux._3, aux._4))
+        }
       case "0" => mainLoop(u)
       case _ => println("Opcao inválida")
         trackerLoop(u)
@@ -101,7 +100,7 @@ object MenuSemGenerico extends App{
     readLine().trim match {
       case "0" => trackerLoop(u)
       case x if x.toInt <= disponiveis.length =>
-        trackerLoop(adicionarTracker(u, disponiveis(x.toInt - 1)))
+        trackerLoop(disponiveis(x.toInt - 1).adicionarTracker(u))
       case _ => println("Input não válido")
         verPodeAdicionarLoop(u)
     }
@@ -114,14 +113,14 @@ object MenuSemGenerico extends App{
       ("2","Procurar Registo"),
       ("3","Adicionar Registo"),
       ("4","Apagar Registo"),
+      ("5", "Mudar Registo"),
       ("0","Regressar")
     )
-
     println("----[Tracker " + t.nome + "]----")
     println("Meta: " + t.meta + " Registos: " + t.mapa.keys.toList.length)
     options.foreach(x =>println(x._1 + ") " + x._2))
     readLine().trim match {
-      case "1" => println("todo")
+      case "1" => println(t.readRecord())
         trackerEscolhidoLoop(u,t)
       case "2" => t.readRecord(readLine("Data: ").trim)
         trackerEscolhidoLoop(u,t)
@@ -129,7 +128,8 @@ object MenuSemGenerico extends App{
         trackerEscolhidoLoop(res._1, res._2)
       case "4" => val res = t.removeRecord(u,readLine("Data: ").trim)
         trackerEscolhidoLoop(res._1, res._2)
-        trackerEscolhidoLoop(u,t)
+      case "5" => val res = t.addRecord(u,readLine("Data a mudar: ").trim,readLine("Novo dado: ").trim.toDouble)//ñ ta completo
+        trackerEscolhidoLoop(res._1, res._2)
       case "0" => (verTrackerLoop(u),t)
       case _ => println("Opcao inválida")
         trackerEscolhidoLoop(u,t)

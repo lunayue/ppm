@@ -6,79 +6,6 @@ import scala.io.StdIn.readLine
 
 //Devo acabar por dividir isto em vários ficheiros e por num folder/package diferent?
 
-//"Main"
-
-object quizzes extends App{
-  //val qzs = List[Quiz]()
-  //quizLoop(qzs)
-  quizLoop(readQuizzes())
-
-  @tailrec
-  def quizLoop(qs: List[Quiz]):List[Quiz] ={
-    println("(c)reate quizz, (p)lay quiz, (e)dit quiz, (l)eave")
-    val input = readLine.trim.toUpperCase
-    input match{
-      case "C" => quizLoop(qs ++ List(adicionarPergunta(criarQuiz())))
-      case "P" => pickQuiz(qs)
-      case "E" => println("edit"); qs
-      case "L" => println("leave"); writeQuizzes(qs)
-    }
-  }
-
-  def criarQuiz():Quiz = {
-    println("Qual o titulo para o quiz")
-    val input = readLine.trim
-    Quiz(input, List(), Map())
-  }
-
-  @tailrec
-  def adicionarPergunta(quiz:Quiz):Quiz = {
-    println("Adicionar mais perguntas?")
-    readLine.trim.toUpperCase match {
-      case "S" | "SIM" | "Y" | "YES" =>
-        println("Escreva a pergunta")
-        val texto = readLine.trim
-        val p1 = adicionarOpcoes(Pergunta(texto, List(), -1))
-        val p2 = decidirCorreta(p1)
-        adicionarPergunta(Quiz(quiz.titulo, quiz.perguntas ++ List(p2), quiz.ut))
-
-      case "N" | "NAO" | "NO" => if(quiz.perguntas.length < 1){println("Um questionário precisa de pelo menos 1 pergunta"); adicionarPergunta(quiz)} else quiz
-      case _ => println("Input não reconhecido"); adicionarPergunta(quiz)
-    }
-  }
-
-  @tailrec
-  def adicionarOpcoes(pergunta: Pergunta):Pergunta = {
-    println("Adicionar mais opcoes?")
-    readLine.trim.toUpperCase match {
-      case "S" | "SIM" | "Y" | "YES" => println("Escreva a opcao"); adicionarOpcoes(pergunta.adicionaOpcao(readLine.trim))
-      case "N" | "NAO" | "NO" => if(pergunta.opcoes.length < 2) {println("Uma pergunta precisa de pelo menos 2 opções"); adicionarOpcoes(pergunta)} else pergunta
-      case _ => println("Input não reconhecido"); adicionarOpcoes(pergunta)
-    }
-  }
-
-  @tailrec
-  def decidirCorreta(pergunta: Pergunta):Pergunta = {
-    println("Qual a opção correta?")
-    pergunta.opcoes map (x => println(x))
-    readLine.toInt match {
-      case x if x > 0 && x <= pergunta.opcoes.length => pergunta.editarCorreta(x)
-      case _ => println("Input invalido"); decidirCorreta(pergunta)
-    }
-  }
-
-  def pickQuiz(quizzes: List[Quiz]):List[Quiz] = {
-    println("Pick a quiz to play")
-    quizzes map println
-    readLine().toInt match{
-      case x if x > 0 && x <= quizzes.length => quizLoop(quizzes.updated(x-1,quizzes(x-1).play()))
-      case -1 => quizLoop(quizzes)
-      case _ => println("Unknown input"); pickQuiz(quizzes)
-    }
-  }
-}
-
-
 //Quiz
 case class Quiz(titulo: Titulo, perguntas: List[Pergunta], ut: UsersTries){
   def play():Quiz = Quiz.play(this)
@@ -175,3 +102,77 @@ object Pergunta{
     inicio + loop(p.opcoes, "")._2 + "Correcta\n" + p.certa + "\n"
   }
 }
+
+//"Main"
+
+object quizzes extends App{
+  //val qzs = List[Quiz]()
+  //quizLoop(qzs)
+  quizLoop(readQuizzes())
+
+  @tailrec
+  def quizLoop(qs: List[Quiz]):List[Quiz] ={
+    println("(c)reate quizz, (p)lay quiz, (e)dit quiz, (l)eave")
+    val input = readLine.trim.toUpperCase
+    input match{
+      case "C" => quizLoop(qs ++ List(adicionarPergunta(criarQuiz())))
+      case "P" => pickQuiz(qs)
+      case "E" => println("edit"); qs
+      case "L" => println("leave"); writeQuizzes(qs)
+    }
+  }
+
+  def criarQuiz():Quiz = {
+    println("Qual o titulo para o quiz")
+    val input = readLine.trim
+    Quiz(input, List(), Map())
+  }
+
+  @tailrec
+  def adicionarPergunta(quiz:Quiz):Quiz = {
+    println("Adicionar mais perguntas?")
+    readLine.trim.toUpperCase match {
+      case "S" | "SIM" | "Y" | "YES" =>
+        println("Escreva a pergunta")
+        val texto = readLine.trim
+        val p1 = adicionarOpcoes(Pergunta(texto, List(), -1))
+        val p2 = decidirCorreta(p1)
+        adicionarPergunta(Quiz(quiz.titulo, quiz.perguntas ++ List(p2), quiz.ut))
+
+      case "N" | "NAO" | "NO" => if(quiz.perguntas.length < 1){println("Um questionário precisa de pelo menos 1 pergunta"); adicionarPergunta(quiz)} else quiz
+      case _ => println("Input não reconhecido"); adicionarPergunta(quiz)
+    }
+  }
+
+  @tailrec
+  def adicionarOpcoes(pergunta: Pergunta):Pergunta = {
+    println("Adicionar mais opcoes?")
+    readLine.trim.toUpperCase match {
+      case "S" | "SIM" | "Y" | "YES" => println("Escreva a opcao"); adicionarOpcoes(pergunta.adicionaOpcao(readLine.trim))
+      case "N" | "NAO" | "NO" => if(pergunta.opcoes.length < 2) {println("Uma pergunta precisa de pelo menos 2 opções"); adicionarOpcoes(pergunta)} else pergunta
+      case _ => println("Input não reconhecido"); adicionarOpcoes(pergunta)
+    }
+  }
+
+  @tailrec
+  def decidirCorreta(pergunta: Pergunta):Pergunta = {
+    println("Qual a opção correta?")
+    pergunta.opcoes map (x => println(x))
+    readLine.toInt match {
+      case x if x > 0 && x <= pergunta.opcoes.length => pergunta.editarCorreta(x)
+      case _ => println("Input invalido"); decidirCorreta(pergunta)
+    }
+  }
+
+  def pickQuiz(quizzes: List[Quiz]):List[Quiz] = {
+    println("Pick a quiz to play")
+    quizzes map println
+    readLine().toInt match{
+      case x if x > 0 && x <= quizzes.length => quizLoop(quizzes.updated(x-1,quizzes(x-1).play()))
+      case -1 => quizLoop(quizzes)
+      case _ => println("Unknown input"); pickQuiz(quizzes)
+    }
+  }
+}
+
+
