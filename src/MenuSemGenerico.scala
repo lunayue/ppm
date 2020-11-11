@@ -114,6 +114,8 @@ object MenuSemGenerico extends App{
       ("3","Adicionar Registo"),
       ("4","Apagar Registo"),
       ("5", "Mudar Registo"),
+      ("6", "Aumentar Registo"),
+      ("7", "Diminuir Registo"),
       ("0","Regressar")
     )
     println("----[Tracker " + t.nome + "]----")
@@ -128,7 +130,12 @@ object MenuSemGenerico extends App{
         trackerEscolhidoLoop(res._1, res._2)
       case "4" => val res = t.removeRecord(u,readLine("Data: ").trim)
         trackerEscolhidoLoop(res._1, res._2)
-      case "5" => val res = t.addRecord(u,readLine("Data a mudar: ").trim,readLine("Novo dado: ").trim.toDouble)//ñ ta completo
+      case "5" =>
+        val res = t.addRecord(u,readLine("Data a mudar: ").trim,readLine("Novo dado: ").trim.toDouble)//ñ ta completo
+        trackerEscolhidoLoop(res._1, res._2)
+      case "6" => val res = t.mudarRecord(u,(readLine("Data a aumentar: ").trim,readLine("Em quanto: ").trim.toDouble), (x:Double, y:Double)=>x+y)//ñ ta completo
+        trackerEscolhidoLoop(res._1, res._2)
+      case "7" => val res = t.mudarRecord(u,(readLine("Data a diminuir: ").trim,readLine("Em quanto: ").trim.toDouble), (x:Double, y:Double)=>x-y)//ñ ta completo
         trackerEscolhidoLoop(res._1, res._2)
       case "0" => (verTrackerLoop(u),t)
       case _ => println("Opcao inválida")

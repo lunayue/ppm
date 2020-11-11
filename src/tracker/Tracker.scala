@@ -13,6 +13,7 @@ case class Tracker(user:String, nome:String, mapa:Map[String, Double], meta:Doub
   def changeMeta(nova:Double):Tracker = Tracker(this.user, this.nome, this.mapa, nova, this.acima, this.publico)
   def changeAcima(novo:Boolean):Tracker = Tracker(this.user, this.nome, this.mapa, this.meta, novo, this.publico)
   def adicionarTracker(user:User):User = Tracker.adicionarTracker(user,this)
+  def mudarRecord(user:User,dado:(String,Double) ,f:(Double,Double) => Double):(User, Tracker) = Tracker.mudarRecord(this, user,dado, f)
 
 }
 
@@ -20,7 +21,6 @@ object Tracker{
   //Requerem um Tracker especifico
   def addRecord(user:User, tracker:Tracker, data:String,dado:Double):(User, Tracker) ={
     val novo = Tracker(tracker.user, tracker.nome, tracker.mapa + (data -> dado), tracker.meta, tracker.acima, tracker.publico)
-    print(novo)
     (user.replaceTracker(tracker, novo), novo)
   }
 
@@ -60,6 +60,10 @@ object Tracker{
   def adicionarTracker(u:User,t:Tracker): User ={
     u.replaceTracker(t, Tracker(u.username, t.nome, Map(),t.meta, t.acima, t.publico))
   }
+
+  def mudarRecord(t:Tracker, u:User, d:(String,Double), f:(Double,Double)=>Double): (User,Tracker) = if (t.mapa isDefinedAt d._1) addRecord(u, t, d._1,f(t.mapa(d._1),d._2) ) else (u,t)
+
+
 
   //Não requerem Tracker
   def criarTracker(u:User,nome:String,meta:Double, acima:Boolean, publico:Boolean):User = {
