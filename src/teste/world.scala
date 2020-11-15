@@ -1,5 +1,0 @@
-package teste
-
-object world {
-
-}
