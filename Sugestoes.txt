@@ -1,0 +1,9 @@
+Admin
+Tracker de Estudo
+Cria um tracker com quanto deves estudar por dia ou semana e vai tomando nota de quanto tempo usaste para estudar
+Luna
+Atencao as Sugestoes
+Quando das uma sugestao, esta fica disponivel para toda a gente e ver e nao ha forma de a apagares ou editar. No entanto, o teu username fica associado. Tem cuidado com o que escreves!
+Luna
+Quizes personalizados para estudares
+Cria quizzes com perguntas relacionadas com a materia que estas a aprender para mais tarde poderes testar o teu conhecimento
