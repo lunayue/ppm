@@ -1,5 +1,7 @@
 package everything
 
+import everything.Utils.{readQuizzes, writeQuizzes, writeSugestao, writeUser}
+
 import scala.util.{Failure, Success, Try}
 
 object Sessao {
@@ -13,17 +15,23 @@ object Sessao {
   def existsUser(users:Map[String,User], username:String):Option[User] = {
     Try(users(username)) match {
       case Success(x) => Some(x)
-      case Failure(x) => None
+      case Failure(_) => None
     }
   }
 
   def createUser(users:Map[String,User], username:String, password:String, repeticao:String):Option[User] = {
     existsUser(users, username) match {
-      case None => if(password.equals(repeticao)) User(username, password, Map())
+      case None => if(password.equals(repeticao)) User(username, password, Map(), List(), readQuizzes())
         else println("As Passwords submetidas tem de ser iguais")
         None
       case _ => println("Utilizador já existente")
         None
     }
+  }
+
+  def logout(u:User):User = {
+    writeSugestao(u.sugestoes)
+    writeQuizzes(u.quizzes.values.toList)
+    writeUser(u)
   }
 }

@@ -59,6 +59,8 @@ object Menu extends App{
       ("16", "Ajuda"),
       ("17", "Sugestoes"),
       ("18", "Dar sugestao"),
+      ("19", "Ver quizzes"),
+      ("20", "Jogar"),
       ("0", "Logout"))
 
     println("----[Menu]----")
@@ -189,9 +191,11 @@ object Menu extends App{
         mainLoop(user)
       case "17" => readSugestoes() map (x=> println(x.mostra()))
         mainLoop(user)
-      case "18" => writeSugestao(Sugestao(user.nome, readLine("Titulo: ").trim, readLine("Texto: ").trim))
+      case "18" => mainLoop(user.daSugestao(Sugestao(user.nome, readLine("Titulo: ").trim, readLine("Texto: ").trim)))
+      case "19" => user.podeJogar() foreach (x=>println(x.titulo + " de " + x.dono))
         mainLoop(user)
-      case "0" => writeUser(user)
+      case "20" => mainLoop(user.joga(readLine("Nome do dono: "), readLine("Titulo do quiz:" )))
+      case "0" => logout(user)
       case _ => println("Opcao inválida")
         mainLoop(user)
     }

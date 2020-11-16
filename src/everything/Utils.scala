@@ -64,7 +64,7 @@ object Utils{
       case _ => (lines,Map())
     }
     //Se tivermos mais cenas para ler podemos ir buscar as linhas por ler ao tracker._1
-    User(nome,pass,trackers._2)
+    User(nome,pass,trackers._2, List(), readQuizzes())
   }
 
   def readTrackers(strs:List[String]):(List[String],Map[String,Tracker]) = {
@@ -155,11 +155,97 @@ object Utils{
     else List()
   }
 
-  def writeSugestao(sugestao:Sugestao): Unit = {
+  def writeSugestao(sugestao:List[Sugestao]): Unit = {
     val file = new File("Sugestoes.txt")
     val fos = new FileOutputStream(file, true)
     val pw = new PrintWriter(fos)
-    pw.append(sugestao.user + "\n" + sugestao.titulo + "\n" + sugestao.texto + "\n")
+    sugestao map (x=> pw.append(x.user + "\n" + x.titulo + "\n" + x.texto + "\n"))
+    pw.close()
+  }
+
+  def readQuizzes():Map[(String,String),Quiz]={
+    val files = getListOfFiles("quizzes")
+    val quizzes = files map (x=>readQuiz(x))
+
+    @tailrec
+    def loop(lst:List[Quiz], mapa:Map[(String,String),Quiz]):(List[Quiz],Map[(String,String),Quiz]) = lst match {
+      case Nil => (lst, mapa)
+      case h::t => loop(t, mapa + ((h.dono, h.titulo) -> h))
+    }
+    loop(quizzes, Map())._2
+  }
+
+  def readQuiz(file:File):Quiz = {
+    val bufferedSource = Source.fromFile(file)
+    val lines = bufferedSource.getLines.toList
+    bufferedSource.close
+
+    val dono = lines.head
+    val titulo = lines(1)
+    val descricao = lines(2)
+    val publico = lines(3).toBoolean
+    val aux = lines.indexOf("Percentagens")
+    val perguntas = readPerguntas(lines.slice(4, aux))
+    val percentagems = readPercentagens(lines.drop(aux+1))
+    val q = Quiz(dono, titulo, descricao, perguntas, percentagems, publico)
+    println(q)
+    q
+  }
+
+  def readPerguntas(lst:List[String]):List[Pergunta] = {
+    @tailrec
+    def loop(str:List[String], ps:List[Pergunta]):(List[String], List[Pergunta]) = str match {
+      case Nil => (List(), ps)
+      case a::t =>{
+        val i = t.indexOf("Pergunta")
+        if(i == -1) (List(), readPergunta(t)::ps)
+        else{
+          val p = readPergunta(t.take(i+1))
+          loop(t.drop(i), p::ps)
+        }
+      }
+    }
+    loop(lst,List())._2
+  }
+
+  def readPergunta(lst:List[String]):Pergunta = {
+    val texto = lst.head
+    @tailrec
+    def loop(le:List[String], r:List[String], c:Int):(List[String], List[String], Int) = le match {
+      case Nil => (List(), r, c)
+      case a::b::t if a.equals("Certa") => makeInt(b) match {
+        case Success(x) =>
+          (t, r, x)
+        case Failure(_) => loop(b::t, a::r, c )
+      }
+      case a::t if a.equals("Opcoes") => loop(t, r, c)
+      case a::t => loop(t, a::r,c)
+    }
+    val aux = loop(lst.tail, List(), -1)
+    Pergunta(texto, aux._2.reverse, aux._3)
+  }
+
+  def readPercentagens(lst:List[String]):List[(String, Int, Double)] = {
+    @tailrec
+    def loop(l:List[String], r:List[(String, Int, Double)]):(List[String], List[(String, Int, Double)]) = l match {
+      case Nil => (List(), r)
+      case a::b::c::t => loop(t, (a,b.toInt, c.toDouble)::r)
+    }
+    loop(lst, List())._2
+  }
+
+  def writeQuizzes(qz:List[Quiz]) = {
+    val dir = new File("quizzes")
+    dir.mkdir()
+    qz foreach (x=> writeQuiz(x))
+  }
+
+  def writeQuiz(q:Quiz)={
+    val file = new File("quizzes" + File.separator + q.dono + "-" + q.titulo + ".txt")
+    val fos = new FileOutputStream(file, false)
+    val pw = new PrintWriter(fos)
+    file.createNewFile()
+    pw.write(q.escreve())
     pw.close()
   }
 }
