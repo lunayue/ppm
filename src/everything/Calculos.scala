@@ -11,6 +11,7 @@ object Calculos {
   def aguaCopos(agua:Int, tamanhoCopo:Int):Int = agua/tamanhoCopo
 
   def bmi(m:Double, a:Double):Double = m/(a*a)
+
   def poupanca(t:Tracker):Int = (t.registos map (x=> x.meta-x.dado) foldRight 0 )(_+_)
   def ganho(t:Tracker):Int = (t.registos map (x=> x.dado-x.meta) foldRight 0 )(_+_)
   def total(t:Tracker):Int = (t.registos foldRight 0 )(_.dado +_)

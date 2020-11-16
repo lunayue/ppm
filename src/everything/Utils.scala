@@ -14,6 +14,7 @@ object Utils{
     case "privado" | "nao" => Success(false)
     case _ => Try(s.toBoolean)
   }
+  def makeDouble(s:String):Try[Double] = Try(s.trim.toDouble)
 
   def writeUser(user:User):User = {
     val dir = new File("users")

@@ -2,6 +2,7 @@ package everything
 
 import everything.Sessao._
 import everything.Utils._
+import everything.Calculos._
 
 import scala.annotation.tailrec
 import scala.io.StdIn.readLine
@@ -61,6 +62,16 @@ object Menu extends App{
       ("18", "Dar sugestao"),
       ("19", "Ver quizzes"),
       ("20", "Jogar"),
+      ("21", "Agua ml"),
+      ("22", "Agua copos"),
+      ("23", "BMI"),
+      ("24", "Poupanca"),
+      ("25", "Ganho"),
+      ("26", "Total"),
+      ("27", "Semanas que deve demorar a perder peso"),
+      ("28", "Horas que dormiu"),
+      ("29", "Quando se deve levantar"),
+      ("30", "Quando se deve deitar"),
       ("0", "Logout"))
 
     println("----[Menu]----")
@@ -195,6 +206,92 @@ object Menu extends App{
       case "19" => user.podeJogar() foreach (x=>println(x.titulo + " de " + x.dono))
         mainLoop(user)
       case "20" => mainLoop(user.joga(readLine("Nome do dono: "), readLine("Titulo do quiz:" )))
+      case "21" => {
+        val idade = makeInt(readLine("Idade: "))
+        val peso = makeDouble(readLine("Peso em kg: "))
+        val exercicio = makeInt("Exercicio por dia, escreva em partes da hora (ex:30mins = 0.5horas): ")
+        (idade, peso, exercicio) match {
+          case (Success(x),Success(y),Success(z)) => println(aguaMl(x,y,z))
+          case _ => println("Inputs invalidos")
+        }
+        mainLoop(user)
+      }
+
+      case "22" =>{
+        val agua = makeInt(readLine("Agua que pretender beber em ml: "))
+        val copo = makeInt(readLine("Tamanho do copo em ml: "))
+        (agua, copo) match {
+          case (Success(x),Success(y)) => println(aguaCopos(x,y))
+          case _ => println("Inputs invalidos")
+        }
+        mainLoop(user)
+      }
+      case "23" =>{
+        val m = makeDouble(readLine("Indique o ser peso em kg: "))
+        val a = makeDouble(readLine("Indique a sua altura em metros: "))
+        (m, a) match {
+          case (Success(x),Success(y)) => println(bmi(x,y))
+          case _ => println("Inputs invalidos")
+        }
+        mainLoop(user)
+      }
+      case "24" =>{
+        user.existeTracker(readLine("Nome do traker: "))  match {
+          case Success(x) => println(poupanca(x))
+          case _ => println("Tracker nao encontrado")
+        }
+        mainLoop(user)
+      }
+      case "25" =>{
+        user.existeTracker(readLine("Nome do traker: "))  match {
+          case Success(x) => println(ganho(x))
+          case _ => println("Tracker nao encontrado")
+        }
+        mainLoop(user)
+      }
+      case "26" =>{
+        user.existeTracker(readLine("Nome do traker: "))  match {
+          case Success(x) => println(total(x))
+          case _ => println("Tracker nao encontrado")
+        }
+        mainLoop(user)
+      }
+      case "27" =>{
+        val m1 = makeDouble(readLine("Indique o seu peso atual em kg: "))
+        val m2 = makeDouble(readLine("Indique o peso que pretende alcancar em kg: "))
+        (m1, m2) match {
+          case (Success(x),Success(y)) => println(semanaPeso(x,y))
+          case _ => println("Inputs invalidos")
+        }
+        mainLoop(user)
+      }
+      case "28" =>{
+        val deita = Try(Hora(readLine("Indique apenas a hora em que se deitou: ").toInt,readLine("Indique apenas os minutos a que se deitou: ").toInt))
+        val levanta = Try(Hora(readLine("Indique apenas a hora em que se levantou: ").toInt,readLine("Indique apenas os minutos a que se levantou: ").toInt))
+        (deita, levanta) match {
+          case (Success(x),Success(y)) => println(horasDormidas(x,y))
+          case _ => println("Inputs invalidos")
+        }
+        mainLoop(user)
+      }
+      case "29" =>{
+        val deita = Try(Hora(readLine("Indique apenas a hora em que se deitou: ").toInt,readLine("Indique apenas os minutos a que se deitou: ").toInt))
+        val dormiu = Try(Hora(readLine("Indique apenas as horas que dormiu: ").toInt,readLine("Indique apenas os minutos que dormiu: ").toInt))
+        (deita, dormiu) match {
+          case (Success(x),Success(y)) => println(horasDormidas(x,y))
+          case _ => println("Inputs invalidos")
+        }
+        mainLoop(user)
+      }
+      case "30" =>{
+        val dormiu = Try(Hora(readLine("Indique apenas as horas que dormiu: ").toInt,readLine("Indique apenas os minutos que dormiu: ").toInt))
+        val levanta = Try(Hora(readLine("Indique apenas a hora em que se levantou: ").toInt,readLine("Indique apenas os minutos a que se levantou: ").toInt))
+        (dormiu, levanta) match {
+          case (Success(x),Success(y)) => println(horasDormidas(x,y))
+          case _ => println("Inputs invalidos")
+        }
+        mainLoop(user)
+      }
       case "0" => logout(user)
       case _ => println("Opcao inválida")
         mainLoop(user)
