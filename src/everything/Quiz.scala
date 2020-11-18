@@ -62,6 +62,6 @@ object Quiz{
     q.acrecentaPC((u, tentativas, pc))
   }
 
-  def calcPercRight(ps:List[Pergunta], ce:List[Boolean]):Double = (ce count(x=> x)) / ps.length
+  def calcPercRight(ps:List[Pergunta], ce:List[Boolean]):Double = ((ce count(x=> x)) / ps.length.toDouble)*100
 
 }

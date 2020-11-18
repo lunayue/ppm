@@ -9,7 +9,7 @@ case class Tracker(nome:String, descricao:String, meta:Int, melhorUltrapassar:Bo
   def mudarMeta(novo:Int):Tracker = Tracker(this.nome, this.descricao, novo, this.melhorUltrapassar, this.publico, this.registos)
   def adicionarRegisto(data:String, dado:Int):Tracker = Tracker.adicionarRegisto(this, data,dado)
   def nAlcancados():Int = this.registos count (x => x.alcancado())
-  def nTotal():Int = this.registos length
+  def nTotal():Int = this.registos.length
   def percentagemAlcancado():Double = (this.nAlcancados()/this.nTotal())*100
   def editarRegisto(data:String, dado:Int, f:(Int,Int)=>Int):Tracker = Tracker.editarRegisto(this, data, dado, f)
   def encontraRegisto(data:String):Try[Registo] = Try((this.registos filter (x=>x.data.equals(data))).head)

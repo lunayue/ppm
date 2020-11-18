@@ -1,0 +1,23 @@
+Moon
+Yue
+Trackers
+Videos
+Videos por dia
+10
+true
+true
+2020/11/12
+2
+8
+true
+fim
+Livros
+Livros por dia
+1
+false
+false
+2020/11/12
+1
+3
+false
+fim

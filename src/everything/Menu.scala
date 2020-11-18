@@ -23,12 +23,12 @@ object Menu extends App{
     println("----[Bem Vindo]----")
     options.foreach(x =>println(x._1 + ") " + x._2))
     readLine().trim match {
-      case "1" => login(users, readLine("Username: "), readLine("Password: ")) match {
+      case "1" => login(users, readLine("Username: ").trim, readLine("Password: ").trim) match {
         case Some(x) => mainLoop(x)
         case _ => println("Informacoes erradas")
           loginLoop()
       }
-      case "2" => Sessao.createUser(users, readLine("Username: "), readLine("Password: "), readLine("Repetir Password: ")) match {
+      case "2" => Sessao.createUser(users, readLine("Username: ").trim, readLine("Password: ").trim, readLine("Repetir Password: ").trim) match {
         case Some(x) => mainLoop(x)
         case _ => println("Informacoes erradas")
           loginLoop()
@@ -72,6 +72,7 @@ object Menu extends App{
       ("28", "Horas que dormiu"),
       ("29", "Quando se deve levantar"),
       ("30", "Quando se deve deitar"),
+      ("31", "Ver tracker publicos"),
       ("0", "Logout"))
 
     println("----[Menu]----")
@@ -203,7 +204,7 @@ object Menu extends App{
       case "17" => readSugestoes() map (x=> println(x.mostra()))
         mainLoop(user)
       case "18" => mainLoop(user.daSugestao(Sugestao(user.nome, readLine("Titulo: ").trim, readLine("Texto: ").trim)))
-      case "19" => user.podeJogar() foreach (x=>println(x.titulo + " de " + x.dono))
+      case "19" => user.podeJogar() foreach (x=>println(x.titulo + " de " + x.dono + ") " + x.descricao))
         mainLoop(user)
       case "20" => mainLoop(user.joga(readLine("Nome do dono: "), readLine("Titulo do quiz:" )))
       case "21" => {
@@ -290,6 +291,10 @@ object Menu extends App{
           case (Success(x),Success(y)) => println(horasDormidas(x,y))
           case _ => println("Inputs invalidos")
         }
+        mainLoop(user)
+      }
+      case "31" =>{
+        user.podeAdicionarTracker(users.values.toList) map (x=>println("Tracker " + x._2.nome + " de " + x._1 + ") " + x._2.descricao))
         mainLoop(user)
       }
       case "0" => logout(user)

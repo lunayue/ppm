@@ -1,3 +1,4 @@
+  
 package everything
 
 import everything.Utils.{readQuizzes, writeQuizzes, writeSugestao, writeUser}
@@ -20,10 +21,10 @@ object Sessao {
   }
 
   def createUser(users:Map[String,User], username:String, password:String, repeticao:String):Option[User] = {
+    println(password + "->" + repeticao)
     existsUser(users, username) match {
-      case None => if(password.equals(repeticao)) User(username, password, Map(), List(), readQuizzes())
-        else println("As Passwords submetidas tem de ser iguais")
-        None
+      case None => if(password.compareTo(repeticao) == 0) Option(User(username, password, Map(), List(), readQuizzes())) else {println("As Passwords submetidas tem de ser iguais")
+        None}
       case _ => println("Utilizador já existente")
         None
     }

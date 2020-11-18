@@ -1,0 +1,23 @@
+Luna
+Yue
+Trackers
+Cafe
+Canecas de cafe por dia
+1
+false
+false
+2020/11/12
+1
+3
+false
+fim
+Agua
+Copos de agua por dia
+10
+true
+true
+2020/11/12
+2
+8
+true
+fim

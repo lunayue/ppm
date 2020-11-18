@@ -1,5 +1,6 @@
 package everything
 
+import scala.annotation.tailrec
 import scala.util.{Failure, Success, Try}
 
 case class User(nome:String, password:String, trackers:Map[String, Tracker], sugestoes:List[Sugestao], quizzes: Map[(String,String),Quiz]){
@@ -13,6 +14,7 @@ case class User(nome:String, password:String, trackers:Map[String, Tracker], sug
   def daSugestao(s:Sugestao):User = User.daSugestao(this, s)
   def podeJogar():List[Quiz] = User.podeJogar(this)
   def joga(d:String, t:String):User = User.joga(this,d,t)
+  def podeAdicionarTracker(us:List[User]):List[(String, Tracker)] = User.podeAdicionarTracker(this, us)
 }
 
 object User{
@@ -70,5 +72,17 @@ object User{
       case Failure(_) => println("Quiz desconhecido")
         u
     }
+  }
+
+  def podeAdicionarTracker(u:User, us:List[User]):List[(String, Tracker)] = {
+    @tailrec
+    def loop(lst:List[User], res:List[(String, Tracker)]):(List[User],List[(String, Tracker)]) = lst match {
+      case Nil => (List(), res)
+      case h::t => if(!h.nome.equals(u.nome)) {
+          val aux = h.trackers.values.toList filter (x => x.publico) map (x=>(h.nome, x))
+          loop(t, res ++ aux)
+        } else loop(t, res)
+      }
+    loop(us, List())._2
   }
 }

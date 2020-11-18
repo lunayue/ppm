@@ -189,7 +189,6 @@ object Utils{
     val perguntas = readPerguntas(lines.slice(4, aux))
     val percentagems = readPercentagens(lines.drop(aux+1))
     val q = Quiz(dono, titulo, descricao, perguntas, percentagems, publico)
-    println(q)
     q
   }
 
