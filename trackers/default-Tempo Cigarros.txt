@@ -1,5 +1,0 @@
-default
-Tempo Cigarros
-0.0
-true
-false

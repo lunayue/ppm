@@ -1,0 +1,4 @@
+Criar Tracker
+Para criar um tracker deves selecionar a opcao correta, escolher o nome que queres dar (atencao que nao podes ter nomes repetidos), escrever uma descricao, etc etc
+Remover Tracker
+Para removeres um tracker basta selecionar a opcao correta e escrever o nome do tracker que queres remover. ATENCAO nao podes recuperar o tracker removido
