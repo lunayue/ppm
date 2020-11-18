@@ -3,17 +3,23 @@ alimentacao
 um quiz sobre alimentacao saudavel
 true
 Pergunta
-Qual destes se deve consumir menos?
-Opcoes
-Gordura
-Verduras
-Certa
-0
-Pergunta
 Deve se beber agua em vez de refrigerantes. Esta afirmacao esta
 Opcoes
 Errada
 Certa
 Certa
 1
+Pergunta
+Qual destes se deve consumir menos?
+Opcoes
+Gordura
+Verduras
+Certa
+0
 Percentagens
+Luna
+1
+0.0
+Luna
+2
+0.0
