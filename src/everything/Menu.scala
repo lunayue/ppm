@@ -23,12 +23,12 @@ object Menu extends App{
     println("----[Bem Vindo]----")
     options.foreach(x =>println(x._1 + ") " + x._2))
     readLine().trim match {
-      case "1" => login(users, readLine("Username: "), readLine("Password: ")) match {
+      case "1" => login(users, readLine("Username: ").trim, readLine("Password: ").trim) match {
         case Some(x) => mainLoop(x)
         case _ => println("Informacoes erradas")
           loginLoop()
       }
-      case "2" => Sessao.createUser(users, readLine("Username: "), readLine("Password: "), readLine("Repetir Password: ")) match {
+      case "2" => Sessao.createUser(users, readLine("Username: ").trim, readLine("Password: ").trim, readLine("Repetir Password: ").trim) match {
         case Some(x) => mainLoop(x)
         case _ => println("Informacoes erradas")
           loginLoop()
