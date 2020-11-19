@@ -30,8 +30,8 @@ object Quiz{
   }
 
   def escreve(q:Quiz):String = {
-    val aux = (q.perguntas foldRight "" )(_.escreve +_)
-    val aux2 = (q.percentagemCorretas foldRight "")(escrevePercent(_) +_)
+    lazy val aux = (q.perguntas foldRight "" )(_.escreve +_)
+    lazy val aux2 = (q.percentagemCorretas foldRight "")(escrevePercent(_) +_)
     q.dono + "\n" + q.titulo + "\n" + q.descricao + "\n" + q.publico + "\n"+ aux  + "Percentagens\n" + aux2
   }
 
@@ -47,7 +47,7 @@ object Quiz{
         makeInt(readLine("Qual o nº da opcao correta? ")) match {
           case Success(x) => a.opcaoValida(x-1) match {
             case Success(_) => {
-              val aux2 = a.correta(x-1)
+              lazy val aux2 = a.correta(x-1)
               if(aux2) println("Certo!") else println("Errado, a resposta correta era: " + a.opcoes(x-1))
               loop(t, aux2::rs)
             }
@@ -56,9 +56,9 @@ object Quiz{
             loop(a::t, rs)
         }
     }
-    val ce = loop(q.perguntas, List())
-    val tentativas = (q.percentagemCorretas count (x => x._1.equals(u))) + 1
-    val pc = calcPercRight(q.perguntas, ce._2)
+    lazy val ce = loop(q.perguntas, List())
+    lazy val tentativas = (q.percentagemCorretas count (x => x._1.equals(u))) + 1
+    lazy val pc = calcPercRight(q.perguntas, ce._2)
     q.acrecentaPC((u, tentativas, pc))
   }
 
