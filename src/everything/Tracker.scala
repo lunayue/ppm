@@ -40,8 +40,8 @@ object Tracker{
   def editarRegisto(t:Tracker, data:String, dado:Int, f:(Int,Int)=>Int):Tracker = {
     t.encontraRegisto(data) match {
       case Success(x) =>
-        val i = t.registos.indexOf(x)
-        val novo = novoRegisto(t, data, f(x.dado, dado))
+        lazy val i = t.registos.indexOf(x)
+        lazy val novo = novoRegisto(t, data, f(x.dado, dado))
         t.atualizaRegistos(t.registos.updated(i,novo))
       case _ => println("Registo não encontrado, faça adicionar registo")
         t
@@ -53,7 +53,7 @@ object Tracker{
   }
 
   def escreve(t:Tracker):String = {
-    val inicio = t.nome + "\n" + t.descricao + "\n" + t.meta + "\n" + t.melhorUltrapassar + "\n" + t.publico + "\n"
+    lazy val inicio = t.nome + "\n" + t.descricao + "\n" + t.meta + "\n" + t.melhorUltrapassar + "\n" + t.publico + "\n"
     @tailrec
     def loop(rs:List[Registo], str:String):(List[Registo],String) = rs match {
       case Nil => (List(),str)

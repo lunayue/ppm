@@ -43,7 +43,7 @@ object User{
   }
 
   def escreve(u:User):String = {
-    val inicio = u.nome + "\n" + u.password + "\nTrackers\n"
+    lazy val inicio = u.nome + "\n" + u.password + "\nTrackers\n"
     (u.trackers.values.toList foldRight inicio) ((x,y)=>y+x.escreve())
   }
 
@@ -79,7 +79,7 @@ object User{
     def loop(lst:List[User], res:List[(String, Tracker)]):(List[User],List[(String, Tracker)]) = lst match {
       case Nil => (List(), res)
       case h::t => if(!h.nome.equals(u.nome)) {
-          val aux = h.trackers.values.toList filter (x => x.publico) map (x=>(h.nome, x))
+          val aux = h.trackers.values.toList filter (x => x.publico && u.trackers.keys.toList.indexOf(x.nome) == -1) map (x=>(h.nome, x))
           loop(t, res ++ aux)
         } else loop(t, res)
       }

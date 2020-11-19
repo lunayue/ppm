@@ -9,9 +9,8 @@ import scala.io.StdIn.readLine
 import scala.util.{Failure, Success, Try}
 
 object Menu extends App{
-  val users = readUsers()
-  val ajudas = readAjudas()
-  //val sugestoes = ???
+  lazy val users = readUsers()
+  lazy val ajudas = readAjudas()
 
   @tailrec
   def loginLoop():Any ={

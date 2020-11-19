@@ -47,8 +47,8 @@ object Pergunta{
   def retiraOpcao(p:Pergunta, i:Int):Pergunta = {
     p.opcaoValida(i) match {
       case Success(x) if !x.equals(p.opcoes(p.certa))=>
-        val aux = p.opcoes filter (y=> !y.equals(x))
-        if(i<p.certa) Pergunta(p.texto, aux , p.certa-1)
+        lazy val aux = p.opcoes filter (y=> !y.equals(x))
+        if(i < p.certa) Pergunta(p.texto, aux , p.certa-1)
         else Pergunta(p.texto, aux, p.certa)
       case _ => println("Nao e possivel retirar essa opcao")
         p
