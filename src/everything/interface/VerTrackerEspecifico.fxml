@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="235.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="interface.VerTrackerEspecifico">
+   <children>
+       <GridPane>
+           <columnConstraints>
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+           </columnConstraints>
+           <rowConstraints>
+               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+           </rowConstraints>
+           <children>
+               <MenuBar>
+                   <menus>
+                       <Menu mnemonicParsing="false" text="Trackers">
+                           <items>
+                               <MenuItem mnemonicParsing="false" onAction="#vertrackers" text="Os meus tracker" />
+                               <MenuItem mnemonicParsing="false" onAction="#adicionartracker" text="Adicionar novo tracker" />
+                               <MenuItem mnemonicParsing="false" onAction="#criartracker" text="Criar tracker" />
+                           </items>
+                       </Menu>
+                       <Menu mnemonicParsing="false" text="Quizzes">
+                           <items>
+                               <MenuItem mnemonicParsing="false" onAction="#openEscolheQuiz" text="Jogar" />
+                           </items>
+                       </Menu>
+                       <Menu mnemonicParsing="false" text="Alimentação">
+                           <items>
+                               <MenuItem mnemonicParsing="false" text="todo" />
+                           </items>
+                       </Menu>
+                       <Menu mnemonicParsing="false" text="Listas de Compras">
+                           <items>
+                               <MenuItem mnemonicParsing="false" text="todo" />
+                           </items>
+                       </Menu>
+                       <Menu mnemonicParsing="false" text="Ajuda">
+                           <items>
+                               <MenuItem fx:id="ajuda" mnemonicParsing="false" onAction="#openAjuda" text="Ajuda" />
+                               <MenuItem fx:id="sugestoes" mnemonicParsing="false" onAction="#openSugestoes" text="Sugestões" />
+                               <MenuItem mnemonicParsing="false" onAction="#openCalculos" text="Metas saudaveis e outros calculos" />
+                           </items>
+                       </Menu>
+                   </menus>
+               </MenuBar>
+               <HBox alignment="TOP_RIGHT" GridPane.columnIndex="1">
+                   <children>
+                       <Button fx:id="username" mnemonicParsing="false" onMouseClicked="#openPerfil" prefHeight="0.0" prefWidth="74.0" text="Perfil" />
+                       <Button fx:id="comparar" mnemonicParsing="false" onMouseClicked="#openComparar" text="Comparar" />
+                       <Button fx:id="logoutb" mnemonicParsing="false" onMouseClicked="#logoutUser" text="Logout" />
+                   </children>
+               </HBox>
+           </children>
+       </GridPane>
+      <ScrollPane fx:id="scroll" VBox.vgrow="ALWAYS">
+         <content>
+            <VBox id="mainbox" fx:id="mainbox" prefHeight="200.0" prefWidth="593.0">
+               <children>
+                  <Label fx:id="nometracker" alignment="CENTER" contentDisplay="CENTER" text="Ajuda" textAlignment="CENTER">
+                     <font>
+                        <Font size="36.0" />
+                     </font></Label>
+                  <Label fx:id="descricao" text="Label" />
+                  <GridPane fx:id="grid">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Nome" />
+                        <Label text="Dado" GridPane.columnIndex="1" />
+                        <Label text="Meta" GridPane.columnIndex="2" />
+                        <Label text="Ultrapassar" GridPane.columnIndex="3" />
+                        <Label text="Alcançada" GridPane.columnIndex="4" />
+                     </children>
+                  </GridPane>
+                  <Separator prefWidth="200.0" />
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label text="Nome do Registo" />
+                        <TextField fx:id="nome" />
+                        <Label text="Dado do Registo" />
+                        <TextField fx:id="dado" />
+                        <Button fx:id="adicionar" mnemonicParsing="false" onMouseClicked="#adiciona" text="Adicionar" />
+                     </children>
+                  </HBox>
+                  <Label fx:id="camposvazios" text="Deve preencher s dois campos" textFill="RED" visible="false" />
+                  <Label fx:id="nomeinvalido" layoutX="10.0" layoutY="192.0" text="Nome já utilizado" textFill="RED" visible="false" />
+                  <Label fx:id="dadoinvalido" layoutX="10.0" layoutY="192.0" text="Dado invalido" textFill="RED" visible="false" />
+               </children></VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>
